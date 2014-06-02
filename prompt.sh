@@ -38,10 +38,13 @@ BuildGitPrompt() {
 
         # commits differences
         local gpBranch="$(git branch | grep --color=never '*' | tail -c +3)"
-        local gpDiff="$(git rev-list --left-right origin/${gpBranch}...HEAD)"
-        local gpAhead=$(echo "$gpDiff" | grep -c '>')
-        local gpBehind=$(echo "$gpDiff" | grep -c '<')
-
+        local gpAhead="$(git rev-list HEAD --not --remotes | wc -l)"
+        local gpBehind="0"
+        if [ `git show-ref --verify --quiet refs/heads/remotes/origin/${gpBranch}` ]
+        then
+            # the remote branch exists, thus it can be ahead of us
+            gpBehind=$(git rev-list origin/${gpBranch} --not ${gpBranch} | wc -l)
+        fi
         # Formatting
         local gpFirstHalf=""
 
@@ -53,7 +56,7 @@ BuildGitPrompt() {
         then
             gpFirstHalf="${gpFirstHalf}${gpFormatBehind}${gpBehind}"
         fi
-        if [ "x${gpFirstHalf}" = "x" ]
+        if [ "x${gpFirstHalf}" == "x" ]
         then
             gpFirstHalf="${gpFormatEqual}"
         fi
@@ -61,24 +64,24 @@ BuildGitPrompt() {
         gpFirstHalf="${gpPrefix}${gpFormatBranch}${gpBranch}${gpFirstHalf}"
 
         gpSecondHalf=""
-        if [ $gpCountStaged != "0" ]
+        if [ "$gpCountStaged" != "0" ]
         then
             gpSecondHalf="${gpFormatStaged}${gpCountStaged}"
         fi
-        if [ $gpCountModified != "0" ]
+        if [ "$gpCountModified" != "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatEdit}${gpCountModified}"
         fi
-        if [ ${gpCountDeleted} != "0" ]
+        if [ "$gpCountDeleted" != "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatDel}${gpCountDeleted}"
         fi
-        if [ ${gpCountUntracked} != "0" ]
+        if [ "$gpCountUntracked" != "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatUntracked}${gpCountUntracked}"
         fi
 
-        if [ "x${gpSecondHalf}" = "x" ]
+        if [ "x${gpSecondHalf}" == "x" ]
         then
             GitPrompt="${gpFirstHalf}${gpSuffix}"
         else
