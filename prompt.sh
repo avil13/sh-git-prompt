@@ -40,11 +40,9 @@ BuildGitPrompt() {
         local gpBranch="$(git branch | grep --color=never '*' | tail -c +3)"
         local gpAhead="$(git rev-list HEAD --not --remotes | wc -l)"
         local gpBehind="0"
-        if [ `git show-ref --verify --quiet refs/heads/remotes/origin/${gpBranch}` ]
-        then
-            # the remote branch exists, thus it can be ahead of us
-            gpBehind=$(git rev-list origin/${gpBranch} --not ${gpBranch} | wc -l)
-        fi
+        git show-ref --verify --quiet refs/remotes/origin/${gpBranch}
+        # if the remote branch exists, it can be ahead of us
+        [ $? -eq 0 ] && gpBehind=$(git rev-list origin/${gpBranch} --not ${gpBranch} | wc -l)
         # Formatting
         local gpFirstHalf=""
 
