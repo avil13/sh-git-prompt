@@ -38,11 +38,14 @@ BuildGitPrompt() {
 
         # commits differences
         local gpBranch="$(git branch | grep --color=never '*' | tail -c +3)"
+        # default if upstream doesn't exist
         local gpAhead="$(git rev-list HEAD --not --remotes | wc -l)"
         local gpBehind="0"
         git show-ref --verify --quiet refs/remotes/origin/${gpBranch}
-        # if the remote branch exists, it can be ahead of us
-        [ $? -eq 0 ] && gpBehind=$(git rev-list origin/${gpBranch} --not ${gpBranch} | wc -l)
+        local gpUpExists=$?
+        # if the remote branch exists, compare to it
+        [ $gpUpExists -eq 0 ] && gpAhead=$(git rev-list HEAD --not origin/${gpBranch} | wc -l)
+        [ $gpUpExists -eq 0 ] && gpBehind=$(git rev-list origin/${gpBranch} --not ${gpBranch} | wc -l)
         # Formatting
         local gpFirstHalf=""
 
