@@ -104,8 +104,8 @@ PrintPrompt() {
     local dir="$(pwd -P)"
     [[ "$dir" =~ ^"$HOME"(/|$) ]] && dir="~${dir#$HOME}"
     echo -ne "$(BuildGitPrompt)\e[38;5;34m$(whoami)\e[38;5;202m@\e[38;5;27m$(uname -n)\e[38;5;202m:${dir}\n"
-    export PS1="\[\e[38;5;202m\]~>\[\e[38;5;15m\] "
-    export PS2="\[\e[38;5;202m\]>\[\e[28;5;15m\] "
+    export PS1="\[\e[38;5;202m\]~>\[\e[0m\] "
+    export PS2="\[\e[38;5;202m\]>\[\e[0m\] "
 }
 
 # for bash
