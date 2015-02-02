@@ -18,14 +18,14 @@ BuildGitPrompt() {
         local gpSuffix="${gpColDelimiters}}$gpColReset "
         local gpSeparator="${gpColDelimiters}|"
         #prefixes
-        local gpFormatBranch="\e[38;5;5m"
-        local gpFormatAhead="\e[38;5;39m↑"
-        local gpFormatBehind="\e[38;5;196m↓"
-        local gpFormatEqual="\e[38;5;46m✔"
-        local gpFormatStaged="\e[38;5;48m●"
-        local gpFormatEdit="\e[38;5;27m✚"
-        local gpFormatDel="\e[38;5;160m✖"
-        local gpFormatUntracked="\e[38;5;214m?"
+        local gpFormatBranch=" \e[38;5;5m"
+        local gpFormatAhead=" \e[38;5;39m↑"
+        local gpFormatBehind=" \e[38;5;196m↓"
+        local gpFormatEqual=" \e[38;5;46m✔"
+        local gpFormatStaged=" \e[38;5;48m●"
+        local gpFormatEdit=" \e[38;5;27m✚"
+        local gpFormatDel=" \e[38;5;160m✖"
+        local gpFormatUntracked=" \e[38;5;214m?"
 
         # staged changes
         local gpCountStaged=`git diff --name-status --staged | wc -l`
@@ -103,9 +103,9 @@ BuildGitPrompt() {
 PrintPrompt() {
     local dir="$(pwd -P)"
     [[ "$dir" =~ ^"$HOME"(/|$) ]] && dir="~${dir#$HOME}"
-    echo -ne "$(BuildGitPrompt)\e[38;5;34m$(whoami)\e[38;5;202m@\e[38;5;27m$(uname -n)\e[38;5;202m:${dir}\n"
-    export PS1="\[\e[38;5;202m\]~>\[\e[0m\] "
-    export PS2="\[\e[38;5;202m\]>\[\e[0m\] "
+    echo -ne "$(BuildGitPrompt)\e[0;1;34m$(whoami)@\e[38;5;27m$(uname -n)\e[0;2;37m:${dir}\n"
+    export PS1="\[\e[0;1;32m\]$\[\e[0m\] "
+    export PS2="\[\e[0;1;32m\]$\[\e[0m\] "
 }
 
 # for bash
