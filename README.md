@@ -5,7 +5,7 @@ My personnal git-prompt, in pure shellscript.
 
 Currently only tested with Bash.
 
-To use it, simply source `prompt.sh` in your `.bashrc`.
+To use it, simply `source prompt.sh` in your `.bashrc`.
 
 Looks like this:
 
