@@ -20,7 +20,7 @@ BuildGitPrompt() {
         local gpPrefix="${gpColDelimiters}["
         local gpSuffix="${gpColDelimiters}]$gpColReset "
         local gpSeparator="${gpColDelimiters}|"
-        #prefixes
+        # prefixes
         local gpFormatBranch="\033[38;5;5m"
         local gpFormatAhead="\033[38;5;39m ↑"
         local gpFormatBehind="\033[38;5;196m ↓"
