@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # This script is an attempt to generate a git-prompt with only sh
+myTrim() {
+    echo $1 | SED 's/^\s*//;s/\s*$//'
+}
 
 BuildGitPrompt() {
 
@@ -8,7 +11,7 @@ BuildGitPrompt() {
 
     # colors
     local gpColReset='\033[0m'
-    local gpColDelimiters='\e[38;5;202m'
+    local gpColDelimiters='\033[38;5;202m'
     if [ "x$(git symbolic-ref HEAD 2>&1 | grep fatal)" == "x" ]
     then
         # we are in a git repo
@@ -18,23 +21,23 @@ BuildGitPrompt() {
         local gpSuffix="${gpColDelimiters}}$gpColReset "
         local gpSeparator="${gpColDelimiters}|"
         #prefixes
-        local gpFormatBranch=" \e[38;5;5m"
-        local gpFormatAhead=" \e[38;5;39m↑"
-        local gpFormatBehind=" \e[38;5;196m↓"
-        local gpFormatEqual=" \e[38;5;46m✔"
-        local gpFormatStaged=" \e[38;5;48m●"
-        local gpFormatEdit=" \e[38;5;27m✚"
-        local gpFormatDel=" \e[38;5;160m✖"
-        local gpFormatUntracked=" \e[38;5;214m?"
+        local gpFormatBranch="\033[38;5;5m"
+        local gpFormatAhead="\033[38;5;39m ↑"
+        local gpFormatBehind="\033[38;5;196m ↓"
+        local gpFormatEqual="\033[38;5;46m ✔"
+        local gpFormatStaged="\033[38;5;48m ●"
+        local gpFormatEdit="\033[38;5;27m ✚"
+        local gpFormatDel="\033[38;5;160m ✖"
+        local gpFormatUntracked="\033[38;5;214m ?"
 
         # staged changes
-        local gpCountStaged=`git diff --name-status --staged | wc -l`
+        local gpCountStaged=$(myTrim "$(git diff --name-status --staged | wc -l)")
 
         # unstaged changes
-        local gpUnstaged="$(git diff --name-status | cut -c 1)"
-        local gpCountModified=$(echo "$gpUnstaged" | grep -c M)
-        local gpCountDeleted=$(echo "$gpUnstaged" | grep -c D)
-        local gpCountUntracked=$(git ls-files -o --exclude-standard | wc -l)
+        local gpUnstaged=$(myTrim "$(git diff --name-status | cut -c 1)")
+        local gpCountModified=$(myTrim $(echo "$gpUnstaged" | grep -c M))
+        local gpCountDeleted=$(myTrim $(echo "$gpUnstaged" | grep -c D))
+        local gpCountUntracked=$(myTrim "$(git ls-files -o --exclude-standard | wc -l)")
 
         # commits differences
         local gpBranch="$(git branch | grep --color=never '*' | tail -c +3)"
@@ -49,11 +52,11 @@ BuildGitPrompt() {
         # Formatting
         local gpFirstHalf=""
 
-        if [ $gpAhead != "0" ]
+        if [ $gpAhead -ne "0" ]
         then
             gpFirstHalf="${gpFormatAhead}${gpAhead}"
         fi
-        if [ $gpBehind != "0" ]
+        if [ $gpBehind -ne "0" ]
         then
             gpFirstHalf="${gpFirstHalf}${gpFormatBehind}${gpBehind}"
         fi
@@ -65,19 +68,19 @@ BuildGitPrompt() {
         gpFirstHalf="${gpPrefix}${gpFormatBranch}${gpBranch}${gpFirstHalf}"
 
         gpSecondHalf=""
-        if [ "$gpCountStaged" != "0" ]
+        if [ "$gpCountStaged" -ne "0" ]
         then
             gpSecondHalf="${gpFormatStaged}${gpCountStaged}"
         fi
-        if [ "$gpCountModified" != "0" ]
+        if [ "$gpCountModified" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatEdit}${gpCountModified}"
         fi
-        if [ "$gpCountDeleted" != "0" ]
+        if [ "$gpCountDeleted" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatDel}${gpCountDeleted}"
         fi
-        if [ "$gpCountUntracked" != "0" ]
+        if [ "$gpCountUntracked" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatUntracked}${gpCountUntracked}"
         fi
@@ -94,7 +97,7 @@ BuildGitPrompt() {
     if [[ -n "${VIRTUAL_ENV}" ]]
     then
         # we take care of printing virtualenv
-        GitPrompt="\e[38;5;27m($(basename "${VIRTUAL_ENV}"))${ResetColor} ${GitPrompt}"
+        GitPrompt="\033[38;5;27m($(basename "${VIRTUAL_ENV}"))${ResetColor} ${GitPrompt}"
     fi
 
     echo -ne "${GitPrompt}"
@@ -103,9 +106,10 @@ BuildGitPrompt() {
 PrintPrompt() {
     local dir="$(pwd -P)"
     [[ "$dir" =~ ^"$HOME"(/|$) ]] && dir="~${dir#$HOME}"
-    echo -ne "$(BuildGitPrompt)\e[0;1;34m$(whoami)@\e[38;5;27m$(uname -n)\e[0;2;37m:${dir}\n"
-    export PS1="\[\e[0;1;32m\]$\[\e[0m\] "
-    export PS2="\[\e[0;1;32m\]$\[\e[0m\] "
+    echo -ne "$(BuildGitPrompt)"
+    # echo -ne "$(BuildGitPrompt)\033[0;1;34m$(whoami)@\033[38;5;27m$(uname -n)\033[0;2;37m:${dir}\n"
+    # export PS1="\[\033[0;1;32m\]$\[\033[0m\] "
+    # export PS2="\[\033[0;1;32m\]$\[\033[0m\] "
 }
 
 # for bash
