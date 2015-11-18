@@ -34,7 +34,7 @@ BuildGitPrompt() {
         local gpCountStaged=$(myTrim "$(git diff --name-status --staged | wc -l)")
 
         # unstaged changes
-        local gpUnstaged=$(myTrim "$(git diff --name-status | cut -c 1)")
+        local gpUnstaged=$(git diff --name-status | cut -c 1)
         local gpCountModified=$(myTrim $(echo "$gpUnstaged" | grep -c M))
         local gpCountDeleted=$(myTrim $(echo "$gpUnstaged" | grep -c D))
         local gpCountUntracked=$(myTrim "$(git ls-files -o --exclude-standard | wc -l)")
