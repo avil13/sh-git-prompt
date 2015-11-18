@@ -17,8 +17,8 @@ BuildGitPrompt() {
         # we are in a git repo
 
         # format
-        local gpPrefix="${gpColDelimiters}{"
-        local gpSuffix="${gpColDelimiters}}$gpColReset "
+        local gpPrefix="${gpColDelimiters}["
+        local gpSuffix="${gpColDelimiters}]$gpColReset "
         local gpSeparator="${gpColDelimiters}|"
         #prefixes
         local gpFormatBranch="\033[38;5;5m"
@@ -101,19 +101,16 @@ BuildGitPrompt() {
         GitPrompt="\033[38;5;27m($(basename "${VIRTUAL_ENV}"))${ResetColor} ${GitPrompt}"
     fi
 
-    echo -ne "${GitPrompt}"
+    echo -ne "$GitPrompt"
 }
 
-PrintPrompt() {
-    echo -ne "$(BuildGitPrompt)"
-}
 
 # for bash
 if [ -z "$PROMPT_COMMAND" ]
 then
-    PROMPT_COMMAND=PrintPrompt
+    PROMPT_COMMAND=BuildGitPrompt
 else
-    PROMPT_COMMAND="${PROMPT_COMMAND};PrintPrompt"
+    PROMPT_COMMAND="${PROMPT_COMMAND};BuildGitPrompt"
 fi
 
 # adapt for other shells !
