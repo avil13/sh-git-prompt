@@ -2,7 +2,7 @@
 
 # This script is an attempt to generate a git-prompt with only sh
 myTrim() {
-    echo $1 | SED 's/^\s*//;s/\s*$//'
+    echo $1 | sed 's/^\s*//;s/\s*$//'
 }
 
 BuildGitPrompt() {
