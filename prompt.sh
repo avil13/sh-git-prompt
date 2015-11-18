@@ -104,12 +104,7 @@ BuildGitPrompt() {
 }
 
 PrintPrompt() {
-    local dir="$(pwd -P)"
-    [[ "$dir" =~ ^"$HOME"(/|$) ]] && dir="~${dir#$HOME}"
     echo -ne "$(BuildGitPrompt)"
-    # echo -ne "$(BuildGitPrompt)\033[0;1;34m$(whoami)@\033[38;5;27m$(uname -n)\033[0;2;37m:${dir}\n"
-    # export PS1="\[\033[0;1;32m\]$\[\033[0m\] "
-    # export PS2="\[\033[0;1;32m\]$\[\033[0m\] "
 }
 
 # for bash
