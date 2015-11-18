@@ -40,15 +40,16 @@ BuildGitPrompt() {
         local gpCountUntracked=$(myTrim "$(git ls-files -o --exclude-standard | wc -l)")
 
         # commits differences
-        local gpBranch="$(git branch | grep --color=never '*' | tail -c +3)"
+        local gpBranch=$(myTrim "$(git branch | grep --color=never '*' | tail -c +3)")
         # default if upstream doesn't exist
-        local gpAhead="$(git rev-list HEAD --not --remotes | wc -l)"
+        local gpAhead=$(myTrim "$(git rev-list HEAD --not --remotes | wc -l)")
         local gpBehind="0"
         git show-ref --verify --quiet refs/remotes/origin/${gpBranch}
         local gpUpExists=$?
         # if the remote branch exists, compare to it
-        [ $gpUpExists -eq 0 ] && gpAhead=$(git rev-list HEAD --not origin/${gpBranch} | wc -l)
-        [ $gpUpExists -eq 0 ] && gpBehind=$(git rev-list origin/${gpBranch} --not ${gpBranch} | wc -l)
+
+        [ $gpUpExists -eq 0 ] && gpAhead=$(myTrim "$(git rev-list HEAD --not origin/${gpBranch} | wc -l)")
+        [ $gpUpExists -eq 0 ] && gpBehind=$(myTrim "$(git rev-list origin/${gpBranch} --not ${gpBranch} | wc -l)")
         # Formatting
         local gpFirstHalf=""
 
