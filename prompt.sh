@@ -29,6 +29,7 @@ BuildGitPrompt() {
         local gpFormatEdit="\033[38;5;27m ✚"
         local gpFormatDel="\033[38;5;160m ✖"
         local gpFormatUntracked="\033[38;5;214m ?"
+        local gpFormatStashes="\033[37m ≡"
 
         # staged changes
         local gpCountStaged=$(myTrim "$(git diff --name-status --staged | wc -l)")
@@ -38,6 +39,8 @@ BuildGitPrompt() {
         local gpCountModified=$(myTrim $(echo "$gpUnstaged" | grep -c M))
         local gpCountDeleted=$(myTrim $(echo "$gpUnstaged" | grep -c D))
         local gpCountUntracked=$(myTrim "$(git ls-files -o --exclude-standard | wc -l)")
+        # stash lines
+        local countStashes=$(myTrim "$(git stash list | wc -l)")
 
         # commits differences
         local gpBranch=$(myTrim "$(git branch | grep --color=never '*' | tail -c +3)")
@@ -84,6 +87,10 @@ BuildGitPrompt() {
         if [ "$gpCountUntracked" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatUntracked}${gpCountUntracked}"
+        fi
+        if [ "$countStashes" -ne "0" ]
+        then
+            gpSecondHalf="${gpSecondHalf}${gpFormatStashes}${countStashes}"
         fi
 
         if [ "x${gpSecondHalf}" == "x" ]
