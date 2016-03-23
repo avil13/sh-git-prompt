@@ -30,6 +30,7 @@ BuildGitPrompt() {
         local gpFormatDel="\033[38;5;160m ✖"
         local gpFormatUntracked="\033[38;5;214m ?"
         local gpFormatStashes="\033[37m ≡"
+        local gpFormatUnmerged="\033[38;5;160m ⊗"
 
         # staged changes
         local gpCountStaged=$(myTrim "$(git diff --name-status --staged | wc -l)")
@@ -39,6 +40,7 @@ BuildGitPrompt() {
         local gpCountModified=$(myTrim $(echo "$gpUnstaged" | grep -c M))
         local gpCountDeleted=$(myTrim $(echo "$gpUnstaged" | grep -c D))
         local gpCountUntracked=$(myTrim "$(git ls-files -o --exclude-standard | wc -l)")
+        local gpCountUnmerged=$(myTrim "$(git ls-files --unmerged | wc -l)")
         # stash lines
         local countStashes=$(myTrim "$(git stash list | wc -l)")
 
@@ -60,10 +62,12 @@ BuildGitPrompt() {
         then
             gpFirstHalf="${gpFormatAhead}${gpAhead}"
         fi
+
         if [ $gpBehind -ne "0" ]
         then
             gpFirstHalf="${gpFirstHalf}${gpFormatBehind}${gpBehind}"
         fi
+
         if [ "x${gpFirstHalf}" == "x" ]
         then
             gpFirstHalf="${gpFormatEqual}"
@@ -76,21 +80,30 @@ BuildGitPrompt() {
         then
             gpSecondHalf="${gpFormatStaged}${gpCountStaged}"
         fi
+
         if [ "$gpCountModified" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatEdit}${gpCountModified}"
         fi
+
         if [ "$gpCountDeleted" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatDel}${gpCountDeleted}"
         fi
+
         if [ "$gpCountUntracked" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatUntracked}${gpCountUntracked}"
         fi
+
         if [ "$countStashes" -ne "0" ]
         then
             gpSecondHalf="${gpSecondHalf}${gpFormatStashes}${countStashes}"
+        fi
+
+        if [ "$gpCountUnmerged" -ne "0" ]
+        then
+            gpSecondHalf="${gpSecondHalf}${gpFormatUnmerged}${gpCountUnmerged}"
         fi
 
         if [ "x${gpSecondHalf}" == "x" ]
