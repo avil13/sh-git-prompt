@@ -40,7 +40,7 @@ BuildGitPrompt() {
         local gpCountModified=$(myTrim $(echo "$gpUnstaged" | grep -c M))
         local gpCountDeleted=$(myTrim $(echo "$gpUnstaged" | grep -c D))
         local gpCountUntracked=$(myTrim "$(git ls-files -o --exclude-standard | wc -l)")
-        local gpCountUnmerged=$(myTrim "$(git ls-files --unmerged | wc -l)")
+        local gpCountUnmerged=$(myTrim "$(git ls-files --unmerged | cut -f2 | sort -u | wc -l)")
         # stash lines
         local countStashes=$(myTrim "$(git stash list | wc -l)")
 
