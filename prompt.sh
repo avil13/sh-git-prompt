@@ -11,7 +11,7 @@ BuildGitPrompt() {
 
     # colors
     local gpColReset='\033[0m'
-    local gpColDelimiters=' \033[38;5;202m'
+    local gpColDelimiters='\033[38;5;202m'
     # if [ "x$(git symbolic-ref HEAD 2>&1 | grep fatal)" == "x" ]
     if git rev-parse --git-dir > /dev/null 2>&1
     then
