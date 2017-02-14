@@ -46,7 +46,8 @@ BuildGitPrompt() {
         local countStashes=$(myTrim "$(git stash list | wc -l)")
 
         # commits differences
-        local gpBranch=$(myTrim "$(git branch | grep --color=never '*' | tail -c +3)")
+        # local gpBranch=$(myTrim "$(git branch | grep --color=never '*' | tail -c +3)")
+        local gpBranch=$(git rev-parse --abbrev-ref HEAD)
 
         # default if upstream doesn't exist
         local gpAhead=$(myTrim "$(git rev-list HEAD --not --remotes | wc -l)")
