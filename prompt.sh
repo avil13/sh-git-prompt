@@ -47,7 +47,9 @@ BuildGitPrompt() {
 
         # commits differences
         # local gpBranch=$(myTrim "$(git branch | grep --color=never '*' | tail -c +3)")
-        local gpBranch=$(git rev-parse --abbrev-ref HEAD)
+        local gpBranch_abbr=$(git rev-parse --abbrev-ref HEAD)
+        local gpBranch_hash=$(git rev-parse --short=5 HEAD)
+        local gpBranch="${gpBranch_abbr} (${gpBranch_hash})"
 
         # default if upstream doesn't exist
         local gpAhead=$(myTrim "$(git rev-list HEAD --not --remotes | wc -l)")
